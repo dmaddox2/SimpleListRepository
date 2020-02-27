@@ -1,7 +1,10 @@
 /**
- * The following file creates a list which can hold up to 10 integers.
+ * The following file creates an list that initially can hold 10 integers.
  * Integers may be removed, searched for, or converted to a string for easy display.
- * A count of current number of elements in the list may also be returned.
+ * If the list is full its size is increased by 50%. If there is 
+ * more than 25% empty spaces in the list, its size will be 
+ * reduced by 25%. A count of current number of elements 
+ * in the list may also be returned.
  * <p>
  * The class SimpleList first declares an int array list used to manipulate
  * the list throughout the class. As well as an integer count 
@@ -10,7 +13,7 @@
  * 
  * @author Dallas Maddox
  * @classID 343
- * @assignment 1
+ * @assignment 2
 */
 package cse360assign2;
 import java.util.*;
@@ -27,84 +30,102 @@ public class SimpleList
   public SimpleList()
   {
      this.count = 0;
-     list = new int[10];
+     list = new int[10]; 
   }
+  
+  /**
+   * This method adjust the size of the array using a temporary array
+   * that is set to the required size, 50% larger, or 25% smaller than
+   * orignial list, rounded down.
+   * The list is copied to the larger or smaller temporary array.
+   * List is set to tempList.
+   * 
+   * @param changeSize 	the size of increase or decrease of the list
+   */
+   public void adjustSize(int changeSize)
+   {
+	  int tempList[] = new int[changeSize];
+	  for (int index = 0; index < count; index++)
+	  {
+		  tempList[index] = list[index];
+	  }
+	  
+	  list = tempList;	  
+   }
 
   /**
-   * If there are no current elements in list the method adds the new number
-   * to the beginning of the list and increases the count by 1.
-   * If there are less than 10 (the max) number of elements in the list
-   * the method shifts all current elements to the right and adds
-   * the new number in the first position to the far left.
-   * If there are already 10 elements in the list, we use a seperate if 
-   * statement to avoid a NullPointException, and allow the elements to
-   * the far right to be overwritten by the elements shifting to the right.
-   * We then add the new number to the beginning of the list.
+   * If the list is currently full, the adjustSize method is called
+   * to increase the size of the list by 50%.
+   * Otherwise this statement is surpassed.
+   * The method then shifts all elements currently in the list 
+   * over to the right.
+   * The new element is then added to the beginning of the list.
    * 
    * @param newNum	the integer to be added to the list
    */
-  public void add(int newNum)
-  {
-     if (count == 0)
+   public void add(int newNum) 
+   {
+     if (count == list.length)
      {
-         list[0] = newNum;
-         count++;
-     }	 
-     else if (count < 10)
-     {
-         for(int index = count - 1; index >= 0; index--)
-         {
-             list[index+1] = list[index];
-         }
-         list[0] = newNum;
-         count++;
+    	 int increaseSize = count + (count/2);
+    	 adjustSize(increaseSize);
      }
-     else
+     
+     for (int index = count; index > 0; index--)
      {
-         for(int index = count - 2; index >= 0; index--)
-         {
-             list[index+1] = list[index];
-         }
-         list[0] = newNum;
-     } 
-  }
-  /**
-   * If there are no numbers currently in the list a NullPointerException is thrown.
-   * If the number is not found in the list, using the search method, the following
-   * if statements do not execute and the method exits.
-   * If the number to be removed is found at the end, the count of numbers
-   * in the list is reduced by 1.
-   * If the number to be removed is found anywhere else in the list,
-   * the numbers after it are shifted to the left, the number is removed,
-   * and the count is reduced by 1.
-   * 
-   * @param removeNum the number to be removed from the list 
-   */
-  public void remove(int removeNum)
-  {
-	 if (count == 0)
-	 {
-		 throw new NullPointerException();
-	 }
-	 int toFind = search(removeNum);
-	 if (toFind != -1)
-	 {
-		 if (toFind == count - 1)
-		 {
-			 count--;
-		 }
-		 else
-		 {
-			 for(int index = toFind; index < count - 1; index++)
-			 {
-				 list[index] = list[index + 1];
-			 }
-			 count--;
-		 } 
-		 
-	  }
-  }
-  
+    	 list[index] = list[index-1];
+     }
+     
+     list[0] = newNum;
+     count++;
+	  
+   }
+   /**
+    * If there are no numbers currently in the list a NullPointerException is thrown.
+    * If the number is not found in the list, using the search method, the following
+    * if statements do not execute and the method exits.
+    * If the number to be removed is found anywhere  in the list,
+    * the numbers after it are shifted to the left, the number is removed,
+    * and the count is reduced by 1.
+    * If the count is less than 25% of the size of the array, after 
+    * the last element was removed, the array is shrank by 25%
+    * using the adjustSize function.
+    * 
+    * @param removeNum the number to be removed from the list 
+    */
+    public void remove(int removeNum)
+    {
+ 	 if (count == 0)
+ 	 {
+ 		 throw new NullPointerException();
+ 	 }
+ 		 
+ 	 int toFind = search(removeNum);
+ 	 if (toFind != -1)
+ 	 {
+ 		 if (toFind == count - 1)
+ 		 {
+ 			 count--;
+ 		 }
+ 		 else
+ 		 {
+ 			 for(int index = toFind; index < count - 1; index++)
+ 			 {
+ 				 list[index] = list[index + 1];
+ 			 }
+ 			 count--;
+ 		 } 
+ 		 
+ 	   }
+ 	   if (count > 1)
+ 	   {
+ 		   if (count < (list.length*3)/4)
+ 		   {
+ 		 		adjustSize((list.length*3)/4);
+ 		   } 
+ 	   }
+    }
+   
   /**
    * The following method returns the current count that represents
    * the number of elements in the list. This number will be 
