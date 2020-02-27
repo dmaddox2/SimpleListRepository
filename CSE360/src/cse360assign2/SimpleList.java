@@ -1,10 +1,14 @@
 /**
  * The following file creates an list that initially can hold 10 integers.
- * Integers may be removed, searched for, or converted to a string for easy display.
+ * Integers may be added to the beginning, appended to the end of the list, 
+ * removed from the list, searched for, or converted to 
+ * a string for easy display.
  * If the list is full its size is increased by 50%. If there is 
  * more than 25% empty spaces in the list, its size will be 
- * reduced by 25%. A count of current number of elements 
- * in the list may also be returned.
+ * reduced by 25%. 
+ * This program can also return the first element in the list, 
+ * the last element, the count of elements in the list, 
+ * and the number of available spaces in the list.
  * <p>
  * The class SimpleList first declares an int array list used to manipulate
  * the list throughout the class. As well as an integer count 
@@ -34,11 +38,11 @@ public class SimpleList
   }
   
   /**
-   * This method adjust the size of the array using a temporary array
+   * This method adjusts the size of the array using a temporary array
    * that is set to the required size, 50% larger, or 25% smaller than
    * orignial list, rounded down.
    * The list is copied to the larger or smaller temporary array.
-   * List is set to tempList.
+   * List is then set to the temporary list to adjust list's size.
    * 
    * @param changeSize 	the size of increase or decrease of the list
    */
@@ -80,6 +84,28 @@ public class SimpleList
      count++;
 	  
    }
+   
+   /**
+    * The append method adds a number to the end of the the list.
+    * If the list is currently full, the adjustSize method is called
+    * to increase the size of the list by 50%.
+    * The new element is then added to the end of the list and the 
+    * count is increased.
+    * 
+    * @param newEndNum	the number to be appended to this.list
+    */
+    public void append(int newEndNum)
+    {
+ 	  if (count == list.length)
+ 	     {
+ 	    	 int increaseSize = count + (count/2);
+ 	    	 adjustSize(increaseSize);
+ 	     }
+ 	  
+ 	  list[count] = newEndNum;
+ 	  count++;
+    }
+    
    /**
     * If there are no numbers currently in the list a NullPointerException is thrown.
     * If the number is not found in the list, using the search method, the following
@@ -128,8 +154,7 @@ public class SimpleList
    
   /**
    * The following method returns the current count that represents
-   * the number of elements in the list. This number will be 
-   * between 0 and 10.
+   * the number of elements in the list.
    * 
    * @return the number of elements in list returned as an integer
    */
@@ -180,6 +205,8 @@ public class SimpleList
    */
   public int search(int toFind)
   {
+	  int found = -1;
+	  
 	  if (count == 0)
 	  {
 		  throw new NullPointerException();
@@ -188,10 +215,47 @@ public class SimpleList
 	  {
 		  if (list[index] == toFind)
 		  {
-			  return index;
+			  found = index;
 		  }
 	  } 
-	  return -1;	  
+	  
+	  return found;	  
   }
-
+  
+  /**
+   * This method returns the first element in the list.
+   * 
+   * @return firstElement 	the first element in this.list
+   */
+   public int firstElement()
+   {	  
+	  int firstElement = list[0];
+	  return firstElement;
+   }
+  
+  /**
+   * This method returns the element at the last index 
+   * of the list.
+   * 
+   * @return lastElement 	the last element in this.list
+   */
+   public int lastElement()
+   {
+	  int lastElement = list[count-1];
+	  return lastElement;
+   }
+  
+  /**
+   * This method returns the number of current number of spaces
+   * that are available in the list.
+   * 
+   * 
+   * @return sizeLeft	current number of available spaces in this.list
+   */
+   public int size()
+   {
+	  int sizeLeft = list.length - count;
+	  return sizeLeft;
+   }
+  
 }
